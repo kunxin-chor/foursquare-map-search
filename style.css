@@ -1,3 +1,4 @@
+/* all css rules outside of a media query will be meant for mobile devices */
 #map {
     height: 80vh;
 }
@@ -8,17 +9,38 @@
 
 #search-container {
     position: absolute;
-    top: 10px;
+    top: 50px;
     left: 80px;
     z-index: 1000;
     background-color: rgba(255, 255, 255, 0.5);
     padding: 10px;
     min-width: 250px;
     max-width: 250px;
+    display: none; /* do not show by default for mobile devices */
+}
+
+#toggleSearchBtn {
+    position: absolute;
+    left: 80px;
+    top: 10px;
+    z-index: 1000;
 }
 
 #search-results {
     max-height: 300px;
     overflow-y: scroll;
     margin-top: 10px;
+}
+
+@media (min-width: 767px) {
+    #search-container {
+        display: block;
+        max-width: 350px;
+        top: 20px;
+        
+    }
+
+    #toggleSearchBtn {
+        display: none;
+    }
 }

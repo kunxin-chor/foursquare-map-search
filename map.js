@@ -15,20 +15,35 @@ function addMarkersToMap(searchResults, layer, map) {
     const searchResultsContainer = document.querySelector('#search-results');
     // Remove all existing search results
     searchResultsContainer.innerHTML = '';
-    
-	 // take one location at a time from data.results
+
+    // take one location at a time from data.results
     for (let location of searchResults.results) {
         const lat = location.geocodes.main.latitude;
         const lng = location.geocodes.main.longitude;
         const name = location.name;
         const marker = L.marker([lat, lng]);
-        marker.bindPopup(function(){
+        marker.bindPopup(function () {
 
             const divElement = document.createElement('div');
             divElement.innerHTML = `
                 <h3>${location.name}</h3>
+                <img src="#" style="display:none"/>
                 <h4>${location.location.formatted_address}</h4>
             `;
+
+            async function getPicture() {
+                const photos = await getPhotoFromFourSquare(location.fsq_id);
+                if (photos && photos.length > 0) {
+                    const firstPhoto = photos[0];
+                    // display image at 150px width and 150px height
+                    const photoUrl = firstPhoto.prefix + '150x150' + firstPhoto.suffix;
+                    divElement.querySelector("img").src = photoUrl;
+                    divElement.querySelector("img").style.display = "block";
+                }
+            }
+
+            getPicture();
+
             return divElement;
         });
 
@@ -38,7 +53,7 @@ function addMarkersToMap(searchResults, layer, map) {
         // add search result
         const searchResultElement = document.createElement('div');
         searchResultElement.textContent = name;
-        searchResultElement.addEventListener('click', function() {
+        searchResultElement.addEventListener('click', function () {
             map.flyTo([lat, lng], 16);
             marker.openPopup();
         });

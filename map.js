@@ -10,12 +10,16 @@ function addMarkersToMap(searchResults, layer, map) {
 
     // remove all existing markers from the provided layer
     layer.clearLayers();
+
+    // Get a reference to div#search-results
+    const searchResultsContainer = document.querySelector('#search-results');
+    // Remove all existing search results
+    searchResultsContainer.innerHTML = '';
     
 	 // take one location at a time from data.results
     for (let location of searchResults.results) {
         const lat = location.geocodes.main.latitude;
         const lng = location.geocodes.main.longitude;
-        const address = location.location.formatted_address;
         const name = location.name;
         const marker = L.marker([lat, lng]);
         marker.bindPopup(function(){
@@ -30,6 +34,15 @@ function addMarkersToMap(searchResults, layer, map) {
 
         // add the marker to the map
         marker.addTo(layer);
+
+        // add search result
+        const searchResultElement = document.createElement('div');
+        searchResultElement.textContent = name;
+        searchResultElement.addEventListener('click', function() {
+            map.flyTo([lat, lng], 16);
+            marker.openPopup();
+        });
+        searchResultsContainer.appendChild(searchResultElement);
 
         // repeat until there are no location left in searchResults.results
     }
